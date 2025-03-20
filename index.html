@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Air Pollution Prediction</title>
+</head>
+<body>
+    <h2>Enter Pollution Levels</h2>
+    <form id="pollutionForm">
+        <input type="text" name="PM10" placeholder="PM10 Level">
+        <input type="text" name="NO" placeholder="NO Level">
+        <input type="text" name="NO2" placeholder="NO2 Level">
+        <input type="text" name="NOx" placeholder="NOx Level">
+        <input type="text" name="NH3" placeholder="NH3 Level">
+        <input type="text" name="CO" placeholder="CO Level">
+        <input type="text" name="SO2" placeholder="SO2 Level">
+        <input type="text" name="O3" placeholder="O3 Level">
+        <input type="text" name="Benzene" placeholder="Benzene Level">
+        <input type="text" name="Toluene" placeholder="Toluene Level">
+        <input type="text" name="Xylene" placeholder="Xylene Level">
+        <button type="submit">Predict</button>
+    </form>
+
+    <h3 id="predictionText"></h3>
+
+    <script>
+        document.getElementById("pollutionForm").addEventListener("submit", async function(event) {
+            event.preventDefault();
+
+            const formData = new FormData(event.target);
+            const pollutionData = {};
+            formData.forEach((value, key) => {
+                pollutionData[key] = parseFloat(value);
+            });
+
+            try {
+                const response = await fetch("http://127.0.0.1:5000/predict", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(pollutionData)
+                });
+                const result = await response.json();
+                document.getElementById("predictionText").innerText = "Predicted PM2.5 Level: " + result.prediction;
+            } catch (error) {
+                document.getElementById("predictionText").innerText = "Error in prediction.";
+            }
+        });
+    </script>
+</body>
+</html>
